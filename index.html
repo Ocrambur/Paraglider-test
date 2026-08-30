@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Quiz Parapendio">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230284c7%22/><text y=%2270%22 x=%2215%22 font-size=%2265%22>🪂</text></svg>">
+  <title>Volo Libero Quiz 🪂 - Esame Parapendio Ae.C.I.</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪂</text></svg>">
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header>
+    <div class="header-container">
+      <div class="logo-area">
+        <div class="logo-icon">🪂</div>
+        <div class="logo-title">
+          <h1>Quiz Volo Libero Ae.C.I.</h1>
+          <p>Preparazione Esame Teorico Parapendio (504 Domande)</p>
+        </div>
+      </div>
+
+      <div class="header-stats">
+        <div class="stat-pill mastery" title="Padronanza complessiva sulle 504 domande">
+          <span>🎯</span> <span id="header-mastery">0%</span>
+        </div>
+        <div class="stat-pill streak" title="Serie consecutiva di risposte corrette">
+          <span>🔥</span> <span id="header-streak">0</span>
+        </div>
+        <div class="stat-pill errors" title="Domande attualmente nel registro errori">
+          <span>❌</span> <span id="header-errors">0</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="sound-btn" class="icon-btn" title="Attiva/Disattiva Audio">🔊</button>
+        <button id="theme-btn" class="icon-btn" title="Cambia Tema Chiaro/Scuro">🌙</button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs-wrapper">
+      <div class="nav-tabs">
+        <button class="nav-tab active" data-view="smart-study">🧠 Ripetizione Intelligente</button>
+        <button class="nav-tab" data-view="exam-mode">⏱️ Simulazione Esame (30 Q)</button>
+        <button class="nav-tab" data-view="subject-mode">📚 Per Materia</button>
+        <button class="nav-tab" data-view="mistakes-mode">❌ Ripasso Errori (<span id="mistake-tab-count">0</span>)</button>
+        <button class="nav-tab" data-view="catalog-mode">🔍 Catalogo Domande</button>
+        <button class="nav-tab" data-view="stats-mode">📊 Statistiche</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Views Container -->
+  <main>
+
+    <!-- 1. SMART STUDY VIEW (SPACED REPETITION) -->
+    <section id="view-smart-study" class="view-section active">
+      <div class="quiz-card">
+        <div class="quiz-card-header">
+          <div>
+            <span class="subject-badge" id="study-subject">Materia</span>
+            <span class="qid-tag" id="study-qid">#1001</span>
+          </div>
+          <div class="question-meta">
+            <span id="study-repetitions">Ripetizioni: 0</span>
+            <span>•</span>
+            <span id="study-priority-badge">Priorità: Normale</span>
+          </div>
+        </div>
+
+        <div class="progress-bar-container" title="Progresso completamento">
+          <div class="progress-bar-fill" id="study-progress-fill" style="width: 0%"></div>
+        </div>
+
+        <h2 class="question-text" id="study-question-text">Caricamento domanda...</h2>
+
+        <div class="options-grid" id="study-options-container">
+          <!-- Option buttons inserted dynamically -->
+        </div>
+
+        <div id="study-feedback-banner" class="feedback-banner">
+          <span id="study-feedback-icon" style="font-size: 20px;"></span>
+          <div id="study-feedback-text"></div>
+        </div>
+
+        <div class="quiz-footer">
+          <div class="footer-left">
+            <button id="study-star-btn" class="btn-secondary" title="Aggiungi alle preferite/difficili">⭐ Difficile</button>
+          </div>
+          <div class="footer-right">
+            <button id="study-next-btn" class="btn-primary" style="display: none;">
+              <span>Prossima Domanda</span>
+              <kbd style="background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px; font-size: 11px;">Spazio</kbd>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. EXAM SIMULATION VIEW -->
+    <section id="view-exam-mode" class="view-section">
+      <!-- Exam intro screen -->
+      <div id="exam-intro" class="quiz-card">
+        <h2 style="margin-bottom: 12px; font-size: 22px;">Simulazione Esame Ufficiale Ae.C.I.</h2>
+        <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 20px;">
+          La prova riproduce fedelmente l'esame teorico ministeriale per l'attestato VDS/VL (Parapendio e Deltaplano):
+        </p>
+        <ul style="color: var(--text-muted); line-height: 1.8; margin-left: 20px; margin-bottom: 25px;">
+          <li><strong>30 domande</strong> estratte proporzionalmente da tutte le 9 materie d'esame.</li>
+          <li>Tempo massimo: <strong>30 minuti</strong>.</li>
+          <li>Criterio di idoneità: <strong>massimo 3 errori</strong> consentiti (almeno 27 risposte esatte per essere IDONEO).</li>
+          <li>Correzione e analisi dettagliata con tutte le soluzioni al termine della prova.</li>
+        </ul>
+        <button id="start-exam-btn" class="btn-primary" style="font-size: 16px; padding: 12px 28px;">🚀 Inizia Simulazione Esame</button>
+      </div>
+
+      <!-- Active Exam screen -->
+      <div id="exam-active" style="display: none;">
+        <div class="exam-bar">
+          <div>
+            <span style="font-weight: 700; font-size: 15px;">Domanda <span id="exam-current-idx">1</span> di 30</span>
+          </div>
+          <div class="exam-timer">
+            <span>⏱️</span> <span id="exam-timer-display">30:00</span>
+          </div>
+          <button id="finish-exam-btn" class="btn-secondary" style="color: #f87171; border-color: rgba(248,113,113,0.4);">Termina Esame</button>
+        </div>
+
+        <div class="exam-grid-navigator" id="exam-nav-dots">
+          <!-- 30 navigator dots -->
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-card-header">
+            <div>
+              <span class="subject-badge" id="exam-subject">Materia</span>
+              <span class="qid-tag" id="exam-qid">#0000</span>
+            </div>
+          </div>
+
+          <h2 class="question-text" id="exam-question-text">Testo domanda esame...</h2>
+
+          <div class="options-grid" id="exam-options-container">
+            <!-- Options -->
+          </div>
+
+          <div class="quiz-footer">
+            <button id="exam-prev-btn" class="btn-secondary">⬅️ Precedente</button>
+            <button id="exam-next-btn" class="btn-primary">Successiva ➡️</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Exam Result screen -->
+      <div id="exam-result" class="quiz-card" style="display: none;">
+        <!-- Filled dynamically -->
+      </div>
+    </section>
+
+    <!-- 3. SUBJECT STUDY VIEW -->
+    <section id="view-subject-mode" class="view-section">
+      <div style="margin-bottom: 20px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <label for="subject-select" style="font-weight: 600; font-size: 14px;">Scegli la Materia:</label>
+        <select id="subject-select" class="select-filter">
+          <option value="1">1. Normativa e Legislazione (40 Q)</option>
+          <option value="2">2. Aerodinamica (150 Q)</option>
+          <option value="3">3. Pronto Soccorso (20 Q)</option>
+          <option value="4">4. Fisiopatologia del Volo (10 Q)</option>
+          <option value="5">5. Meteorologia e Aerologia (120 Q)</option>
+          <option value="6">6. Strumenti (20 Q)</option>
+          <option value="7">7. Tecnica di Pilotaggio (79 Q)</option>
+          <option value="8">8. Materiali (20 Q)</option>
+          <option value="9">9. Sicurezza del Volo (45 Q)</option>
+        </select>
+        <div style="margin-left: auto; font-size: 13px; color: var(--text-muted);">
+          Progresso: <span id="subject-mode-progress">0 / 0</span>
+        </div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-card-header">
+          <div>
+            <span class="subject-badge" id="subview-subject">Materia</span>
+            <span class="qid-tag" id="subview-qid">#1001</span>
+          </div>
+          <div class="question-meta">
+            <span id="subview-counter">1 di 40</span>
+          </div>
+        </div>
+
+        <h2 class="question-text" id="subview-question-text">Testo domanda per materia...</h2>
+
+        <div class="options-grid" id="subview-options-container">
+          <!-- Options -->
+        </div>
+
+        <div id="subview-feedback-banner" class="feedback-banner">
+          <span id="subview-feedback-icon" style="font-size: 20px;"></span>
+          <div id="subview-feedback-text"></div>
+        </div>
+
+        <div class="quiz-footer">
+          <button id="subview-prev-btn" class="btn-secondary">⬅️ Precedente</button>
+          <button id="subview-next-btn" class="btn-primary">Prossima ➡️</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. MISTAKES DRILL VIEW -->
+    <section id="view-mistakes-mode" class="view-section">
+      <div id="no-mistakes-box" class="quiz-card" style="text-align: center; padding: 40px 20px; display: none;">
+        <div style="font-size: 48px; margin-bottom: 15px;">🎉</div>
+        <h2 style="margin-bottom: 8px;">Nessun errore registrato!</h2>
+        <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 20px;">
+          Ottimo lavoro! Continua a esercitarti con la Ripetizione Intelligente o la Simulazione Esame. Le domande che sbaglierai verranno raccolte qui automaticamente per essere ripassate.
+        </p>
+        <button class="btn-primary" onclick="switchView('smart-study')">Torna allo Studio</button>
+      </div>
+
+      <div id="active-mistakes-box">
+        <div style="margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-size: 16px;">Pronto Soccorso Errori (<span id="mistakes-current-count">0</span> domande da recuperare)</h3>
+          <button id="clear-mistakes-btn" class="btn-secondary" style="font-size: 12px; padding: 6px 12px;">Svuota Errori</button>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-card-header">
+            <div>
+              <span class="subject-badge" id="mistake-subject">Materia</span>
+              <span class="qid-tag" id="mistake-qid">#0000</span>
+            </div>
+            <div class="question-meta">
+              <span style="color: #f87171; font-weight: 600;" id="mistake-times-wrong">Sbagliata 1 volta</span>
+            </div>
+          </div>
+
+          <h2 class="question-text" id="mistake-question-text">Testo errore...</h2>
+
+          <div class="options-grid" id="mistake-options-container">
+            <!-- Options -->
+          </div>
+
+          <div id="mistake-feedback-banner" class="feedback-banner">
+            <span id="mistake-feedback-icon" style="font-size: 20px;"></span>
+            <div id="mistake-feedback-text"></div>
+          </div>
+
+          <div class="quiz-footer">
+            <button id="mistake-next-btn" class="btn-primary" style="display: none; margin-left: auto;">
+              Prossimo Errore ➡️
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. CATALOG & SEARCH VIEW -->
+    <section id="view-catalog-mode" class="view-section">
+      <div class="catalog-controls">
+        <input type="text" id="catalog-search" class="search-input" placeholder="🔍 Cerca parola chiave o numero domanda (es. 'stallo', '1020', 'portanza')...">
+        <select id="catalog-subject-filter" class="select-filter">
+          <option value="all">Tutte le Materie (504 Domande)</option>
+          <option value="1">1. Normativa e Legislazione (40)</option>
+          <option value="2">2. Aerodinamica (150)</option>
+          <option value="3">3. Pronto Soccorso (20)</option>
+          <option value="4">4. Fisiopatologia (10)</option>
+          <option value="5">5. Meteorologia (120)</option>
+          <option value="6">6. Strumenti (20)</option>
+          <option value="7">7. Tecnica di Pilotaggio (79)</option>
+          <option value="8">8. Materiali (20)</option>
+          <option value="9">9. Sicurezza del Volo (45)</option>
+        </select>
+        <select id="catalog-status-filter" class="select-filter">
+          <option value="all">Tutti gli stati</option>
+          <option value="mastered">✅ Memorizzate (Streak ≥ 2)</option>
+          <option value="learning">🔄 In apprendimento</option>
+          <option value="unseen">⚪ Mai viste</option>
+          <option value="mistakes">❌ Con errori</option>
+        </select>
+      </div>
+
+      <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+        Visualizzate <span id="catalog-count">504</span> domande
+      </div>
+
+      <div class="catalog-list" id="catalog-items-container">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- 6. STATS & SETTINGS VIEW -->
+    <section id="view-stats-mode" class="view-section">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-title">Padronanza Totale</div>
+          <div class="stat-card-value" id="stats-mastery" style="color: var(--accent);">0%</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Domande padroneggiate</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-title">Domande Viste</div>
+          <div class="stat-card-value" id="stats-seen">0 <span style="font-size: 15px; color: var(--text-muted);">/ 504</span></div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;" id="stats-unseen-sub">504 ancora da vedere</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-title">Risposte Totali Fornite</div>
+          <div class="stat-card-value" id="stats-total-answers">0</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;" id="stats-accuracy">Precisione: 0%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-title">Serie Massima (Record 🔥)</div>
+          <div class="stat-card-value" id="stats-best-streak" style="color: #fb923c;">0</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Risposte esatte di fila</div>
+        </div>
+      </div>
+
+      <h3 style="margin-bottom: 14px; font-size: 17px;">Progresso per Materia</h3>
+      <div class="subject-stat-list" id="stats-subjects-list">
+        <!-- Subject rows rendered dynamically -->
+      </div>
+
+      <h3 style="margin: 30px 0 14px; font-size: 17px;">Gestione Dati e Backup</h3>
+      <div class="quiz-card" style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+        <button id="export-btn" class="btn-secondary">💾 Esporta Progressi (JSON)</button>
+        <label class="btn-secondary" style="cursor: pointer;">
+          📥 Importa Progressi
+          <input type="file" id="import-file" accept=".json" style="display: none;">
+        </label>
+        <button id="reset-stats-btn" class="btn-secondary" style="color: #f87171; border-color: rgba(248,113,113,0.4); margin-left: auto;">
+          🗑️ Azzera Tutti i Dati
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Load Quiz Data & App Script -->
+  <script src="quiz_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

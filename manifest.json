@@ -1,0 +1,16 @@
+{
+  "name": "Quiz Parapendio Ae.C.I.",
+  "short_name": "Quiz VDS",
+  "description": "Preparazione Esame Teorico Parapendio e Volo Libero Ae.C.I.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0284c7",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪂</text></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
